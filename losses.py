@@ -7,8 +7,8 @@ import data_utils
 
 # Note the image_shape must be multiple of patch_shape
 image_shape = (256, 256, 3)
-K_1 = 300  #250
-K_2 = 300  #250
+K_1 = 250
+K_2 = 250
 
 
 def l1_loss(y_true, y_pred):
