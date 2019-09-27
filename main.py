@@ -7,6 +7,12 @@ import data_utils
 from losses import adversarial_loss, generator_loss
 from model import generator_model, discriminator_model, generator_containing_discriminator
 
+import os
+os.mkdir('/content/ImageDeblurring/result')
+os.mkdir('/content/ImageDeblurring/result/interim')
+os.mkdir('/content/ImageDeblurring/result/test')
+os.mkdir('/content/ImageDeblurring/weight')
+
 
 def train(batch_size, epoch_num):
     # Note the x(blur) in the second, the y(full) in the first
