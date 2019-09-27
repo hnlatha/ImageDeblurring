@@ -11,6 +11,7 @@ import os
 os.mkdir('/content/ImageDeblurring/result')
 os.mkdir('/content/ImageDeblurring/result/interim')
 os.mkdir('/content/ImageDeblurring/result/test')
+os.mkdir('/content/ImageDeblurring/result/finally')
 os.mkdir('/content/ImageDeblurring/weight')
 
 
