@@ -8,11 +8,12 @@ from losses import adversarial_loss, generator_loss
 from model import generator_model, discriminator_model, generator_containing_discriminator
 
 import os
-os.mkdir('/content/ImageDeblurring/result')
-os.mkdir('/content/ImageDeblurring/result/interim_300')
-os.mkdir('/content/ImageDeblurring/result/test_300')
-os.mkdir('/content/ImageDeblurring/result/finally_300')
-os.mkdir('/content/ImageDeblurring/weight')
+#os.mkdir('/content/ImageDeblurring/result')
+#os.mkdir('/content/ImageDeblurring/result/interim_300')
+
+#os.mkdir('/content/ImageDeblurring/result/test_300')
+#os.mkdir('/content/ImageDeblurring/result/finally_300')
+#os.mkdir('/content/ImageDeblurring/weight')
 
 
 def train(batch_size, epoch_num):
