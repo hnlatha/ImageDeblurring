@@ -108,6 +108,6 @@ def test_pictures(batch_size):
 
 
 if __name__ == '__main__':
-    train(batch_size=1, epoch_num=1)
+    train(batch_size=1, epoch_num=5)
     test(4)
     test_pictures(2)
