@@ -9,9 +9,9 @@ from model import generator_model, discriminator_model, generator_containing_dis
 
 import os
 os.mkdir('/content/ImageDeblurring/result')
-os.mkdir('/content/ImageDeblurring/result/interim')
-os.mkdir('/content/ImageDeblurring/result/test')
-os.mkdir('/content/ImageDeblurring/result/finally')
+os.mkdir('/content/ImageDeblurring/result/interim_300')
+os.mkdir('/content/ImageDeblurring/result/test_300')
+os.mkdir('/content/ImageDeblurring/result/finally_300')
 os.mkdir('/content/ImageDeblurring/weight')
 
 
@@ -45,7 +45,7 @@ def train(batch_size, epoch_num):
             # output generated images for each 30 iters
             if (index % 30 == 0) and (index != 0):
                 data_utils.generate_image(image_full_batch, image_blur_batch, generated_images,
-                                          'result/interim/', epoch, index)
+                                          'result/interim_300/', epoch, index)
 
             # concatenate the full and generated images,
             # the full images at top, the generated images at bottom
@@ -84,7 +84,7 @@ def test(batch_size):
     g = generator_model()
     g.load_weights('weight/generator_weights.h5')
     generated_images = g.predict(x=x_test, batch_size=batch_size)
-    data_utils.generate_image(y_test, x_test, generated_images, 'result/finally/')
+    data_utils.generate_image(y_test, x_test, generated_images, 'result/finally_300/')
 
 
 def test_pictures(batch_size):
@@ -104,7 +104,7 @@ def test_pictures(batch_size):
     generated = generated_images * 127.5 + 127.5
     for i in range(generated.shape[0]):
         image_generated = generated[i, :, :, :]
-        Image.fromarray(image_generated.astype(np.uint8)).save('result/test/' + str(i) + '.png')
+        Image.fromarray(image_generated.astype(np.uint8)).save('result/test_300/' + str(i) + '.png')
 
 
 if __name__ == '__main__':
