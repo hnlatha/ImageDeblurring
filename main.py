@@ -39,7 +39,7 @@ def train(batch_size, epoch_num):
             # output generated images for each 30 iters
             if (index % 30 == 0) and (index != 0):
                 data_utils.generate_image(image_full_batch, image_blur_batch, generated_images,
-                                          'result/interim_250/', epoch, index)  
+                                          'result/interim/', epoch, index)  
 
             # concatenate the full and generated images,
             # the full images at top, the generated images at bottom
@@ -79,7 +79,7 @@ def test(batch_size):
     g = generator_model()
     g.load_weights('weight/generator_weights.h5')
     generated_images = g.predict(x=x_test, batch_size=batch_size)
-    data_utils.generate_image(y_test, x_test, generated_images, 'result/finally_250/')
+    data_utils.generate_image(y_test, x_test, generated_images, 'result/finally/')
 
 
 def test_pictures(batch_size):
