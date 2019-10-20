@@ -39,7 +39,7 @@ def train(batch_size, epoch_num):
             # output generated images for each 30 iters
             if (index % 30 == 0) and (index != 0):
                 data_utils.generate_image(image_full_batch, image_blur_batch, generated_images,
-                                          'result/interim/', epoch, index)  
+                                          'result/middle/', epoch, index)  
 
             # concatenate the full and generated images,
             # the full images at top, the generated images at bottom
