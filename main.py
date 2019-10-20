@@ -6,14 +6,7 @@ from PIL import Image
 import data_utils
 from losses import adversarial_loss, generator_loss
 from model import generator_model, discriminator_model, generator_containing_discriminator
-
-import os
-os.mkdir('/content/ImageDeblurring/result')
-os.mkdir('/content/ImageDeblurring/result/interim_250')
-os.mkdir('/content/ImageDeblurring/result/test_250')
-os.mkdir('/content/ImageDeblurring/result/finally_250')
-os.mkdir('/content/ImageDeblurring/weight')
-
+from non_local import non_local_block
 
 def train(batch_size, epoch_num):
     # Note the x(blur) in the second, the y(full) in the first
@@ -37,6 +30,7 @@ def train(batch_size, epoch_num):
         print('batches: ', int(x_train.shape[0] / batch_size))
 
         for index in range(int(x_train.shape[0] / batch_size)):
+#        for index in range(1):
             # select a batch data
             image_blur_batch = x_train[index * batch_size:(index + 1) * batch_size]
             image_full_batch = y_train[index * batch_size:(index + 1) * batch_size]
@@ -45,7 +39,7 @@ def train(batch_size, epoch_num):
             # output generated images for each 30 iters
             if (index % 30 == 0) and (index != 0):
                 data_utils.generate_image(image_full_batch, image_blur_batch, generated_images,
-                                          'result/interim_250/', epoch, index)
+                                          'result/interim_250/', epoch, index)  
 
             # concatenate the full and generated images,
             # the full images at top, the generated images at bottom
@@ -68,7 +62,7 @@ def train(batch_size, epoch_num):
             # train generator
             g_loss = g.train_on_batch(image_blur_batch, image_full_batch)
             print('batch %d g_loss : %f' % (index + 1, g_loss))
-
+		
             # let discriminator can be trained
             d.trainable = True
 
@@ -76,6 +70,7 @@ def train(batch_size, epoch_num):
             if (index % 30 == 0) and (index != 0):
                 g.save_weights('weight/generator_weights.h5', True)
                 d.save_weights('weight/discriminator_weights.h5', True)
+	    
 
 
 def test(batch_size):
@@ -104,10 +99,10 @@ def test_pictures(batch_size):
     generated = generated_images * 127.5 + 127.5
     for i in range(generated.shape[0]):
         image_generated = generated[i, :, :, :]
-        Image.fromarray(image_generated.astype(np.uint8)).save('result/test_250/' + str(i) + '.png')
+        Image.fromarray(image_generated.astype(np.uint8)).save('result/test/' + str(i) + '.png')
 
 
 if __name__ == '__main__':
-    train(batch_size=1, epoch_num=10)
+    train(batch_size=1, epoch_num=5)
     test(4)
     test_pictures(2)

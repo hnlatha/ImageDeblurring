@@ -6,9 +6,10 @@ from keras.layers.merge import Average
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model
 from keras.utils.vis_utils import plot_model
-
+from non_local import non_local_block
+from keras import backend as K
 # the paper defined hyper-parameter:chr
-channel_rate = 64
+channel_rate = 32
 # Note the image_shape must be multiple of patch_shape
 image_shape = (256, 256, 3)
 patch_shape = (channel_rate, channel_rate, 3)
@@ -25,6 +26,7 @@ def dense_block(inputs, dilation_factor=None):
     if dilation_factor is not None:
         x = Convolution2D(filters=channel_rate, kernel_size=(3, 3), padding='same',
                           dilation_rate=dilation_factor)(x)
+	
     else:
         x = Convolution2D(filters=channel_rate, kernel_size=(3, 3), padding='same')(x)
     x = BatchNormalization()(x)
@@ -63,7 +65,9 @@ def generator_model():
     # The Tail
     x = LeakyReLU(alpha=0.2)(d_10)
     x = Convolution2D(filters=4 * channel_rate, kernel_size=(1, 1), padding='same')(x)
+
     x = BatchNormalization()(x)
+         
 
     # The Global Skip Connection
     x = concatenate([h, x])
@@ -73,8 +77,15 @@ def generator_model():
     x = LeakyReLU(alpha=0.2)(x)
 
     # Output Image
+    
     outputs = Convolution2D(filters=3, kernel_size=(3, 3), padding='same', activation='tanh')(x)
+    ip_shape = K.shape(outputs)
+    print(ip_shape)
+    
+    #outputs = non_local_block(outputs, mode='embedded', compression=2)
+
     model = Model(inputs=inputs, outputs=outputs, name='Generator')
+    #model.summary()
     return model
 
 
@@ -96,6 +107,8 @@ def discriminator_model():
     x = Convolution2D(filters=4 * channel_rate, kernel_size=(3, 3), strides=(2, 2), padding="same")(x)
     x = BatchNormalization()(x)
     x = LeakyReLU(alpha=0.2)(x)
+    
+    x = non_local_block(x, mode='embedded', compression=2)
 
     x = Flatten()(x)
     outputs = Dense(units=1, activation='sigmoid')(x)
@@ -119,6 +132,7 @@ def discriminator_model():
     x = [model(patch) for patch in list_patch]
     outputs = Average()(x)
     model = Model(inputs=inputs, outputs=outputs, name='Discriminator')
+    #model.summary()
     return model
 
 
@@ -127,6 +141,7 @@ def generator_containing_discriminator(generator, discriminator):
     generated_image = generator(inputs)
     outputs = discriminator(generated_image)
     model = Model(inputs=inputs, outputs=outputs)
+   # model.summary()
     return model
 
 
